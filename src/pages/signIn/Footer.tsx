@@ -3,7 +3,6 @@ import {
   NativeBaseProvider,
   Box,
   Text,
-  Icon,
   HStack,
   Center,
   Pressable,

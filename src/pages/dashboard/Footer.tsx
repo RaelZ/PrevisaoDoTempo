@@ -3,7 +3,6 @@ import {
   NativeBaseProvider,
   Box,
   Text,
-  Icon,
   HStack,
   Center,
   Pressable,
@@ -11,7 +10,7 @@ import {
 import {
   faHome,
   faUserCircle,
-  faSearch,
+  faCloud,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { StyleSheet } from 'react-native';
@@ -40,6 +39,7 @@ export default function Footer() {
         }}
         flex={1}
         bg="white"
+        safeAreaBottom 
       >
         <Center flex={1}></Center>
         <HStack bg="darkBlue.400" alignItems="center" shadow={6}>
@@ -75,14 +75,14 @@ export default function Footer() {
           >
             {selected === 1 ? (
               <Center>
-                <FontAwesomeIcon style={styles.menu} icon={faSearch} />
+                <FontAwesomeIcon style={styles.menu} icon={faCloud} />
                 <Text color="white" fontSize={14}>
                   Pesquisar
                 </Text>
               </Center>
             ) : (
               <Center>
-                <FontAwesomeIcon style={styles.menuSelected} icon={faSearch} />
+                <FontAwesomeIcon style={styles.menuSelected} icon={faCloud} />
                 <Text color="white" fontSize={16}>
                   Pesquisar
                 </Text>
