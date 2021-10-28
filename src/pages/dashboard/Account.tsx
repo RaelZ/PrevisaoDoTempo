@@ -10,7 +10,6 @@ import {
 import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, Text, ActivityIndicator } from 'react-native';
 import { useAuth } from '../../contexts/Auth';
-import Footer from './Footer';
 import { User, FavoriteCities } from '../../models';
 
 const styles = StyleSheet.create({
@@ -18,7 +17,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#CEEEFF',
+    backgroundColor: '#DEEEFF',
   },
   bottomView: {
     width: '100%',
@@ -43,7 +42,7 @@ const styles = StyleSheet.create({
 });
 const list: FavoriteCities[] = [];
 
-const Dashboard: React.FC = () => {
+const Account: React.FC = () => {
   const { signOut, user, favoriteCities } = useAuth();
   const [loggedUser, setLoggedUser] = useState<User>({
     id: null as any,
@@ -77,10 +76,10 @@ const Dashboard: React.FC = () => {
           <Center
             w="80"
             h="20"
-            bg="#DDEEFF"
+            bg="#EDEFFF"
             rounded="md"
             shadow={5}
-            key="cities.id"
+            key={cities.id}
           >
             <Text>Cidade: {cities.name}</Text>
           </Center>
@@ -105,20 +104,17 @@ const Dashboard: React.FC = () => {
                 shadow={3}
                 style={styles.logoutButton}
                 onPress={handleSignOut}
-                mt="10"
+                mt="5"
               >
                 SAIR
               </Button>
             </VStack>
           </NativeBaseProvider>
-          <Box h="150" />
+          <Box h="20" />
         </ScrollView>
-        <View style={styles.bottomView}>
-          <Footer />
-        </View>
       </View>
     </NativeBaseProvider>
   );
 };
 
-export default Dashboard;
+export default Account;

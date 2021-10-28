@@ -2,17 +2,8 @@ import axios from 'axios';
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import { AsyncStorage } from 'react-native';
 import { authApi } from '../api/authApi';
-import { User, FavoriteCities } from '../models';
+import { FavoriteCities, AuthContextData } from '../models';
 
-interface AuthContextData {
-  signed: boolean;
-  haveUser: boolean;
-  loading: boolean;
-  user: User;
-  favoriteCities: FavoriteCities;
-  signIn(email: string, password: string): Promise<void>;
-  signOut(): void;
-}
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 
 export const AuthProvider: React.FC = ({ children }) => {
@@ -34,28 +25,7 @@ export const AuthProvider: React.FC = ({ children }) => {
 
   useEffect(() => {
     async function loadStorageData() {
-      const storageUser = await AsyncStorage.getItem('@RNAuth:user');
-      const storageToken = await AsyncStorage.getItem('@RNAuth:token');
-      const storageCities = await AsyncStorage.getItem('@RNAuth:cities');
-
-      if (storageToken !== null && storageUser !== null && storageCities !== null) {
-        const usuario = JSON.parse(storageUser);
-        const cities = JSON.parse(storageCities);
-        console.log('storageCities: ', storageCities);
-        setUser({
-          id: usuario.id,
-          name: usuario.name,
-          email: usuario.email,
-          createdAt: usuario.createdAt,
-          updatedAt: usuario.updatedAt,
-          token: usuario.token,
-        });
-        setFavoriteCities(cities);
-        setHaveUser(true);
-        axios.defaults.headers.common = {
-          Authorization: `Bearer ${storageToken}`,
-        };
-      }
+      AsyncStorage.clear();
       setLoading(false);
     }
     loadStorageData();

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { User, FavoriteCities } from '../models';
+import { User, PromiseFavoriteCities } from '../models';
 
 let userId = null as any;
 let token = null as any;
@@ -21,7 +21,7 @@ class AuthApi {
   getCities() {
     console.log('A');
     return axios
-      .get<FavoriteCities>(`http://10.0.2.2:3000/user/${userId}`, {
+      .get<PromiseFavoriteCities>(`http://10.0.2.2:3000/user/${userId}`, {
         headers: { Authorization: token },
       })
       .then((res) => {
