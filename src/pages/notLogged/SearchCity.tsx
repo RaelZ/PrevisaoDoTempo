@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   Input,
   Stack,
@@ -62,7 +62,7 @@ export default function SearchCity() {
           />
           <Button.Group mx={{ base: 'auto', md: 0 }}>
             <Button style={styles.entrar} shadow={5}>
-              Procurar
+              PROCURAR
             </Button>
           </Button.Group>
         </Stack>

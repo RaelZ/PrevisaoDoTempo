@@ -1,5 +1,6 @@
 import React from 'react';
-import Account from '../pages/dashboard/Account';
+import Account from '../pages/logged/Account';
+import SearchCity from '../pages/logged/SearchCity';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { StyleSheet } from 'react-native';
@@ -8,7 +9,6 @@ import {
   faHome,
   faUser,
 } from '@fortawesome/free-solid-svg-icons';
-import SearchCity from '../pages/dashboard/SearchCity';
 
 const AppStack = createBottomTabNavigator();
 

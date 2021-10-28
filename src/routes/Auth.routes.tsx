@@ -1,13 +1,14 @@
 import React from 'react';
-import SearchCity from '../pages/signIn/SearchCity';
+import Login from '../pages/notLogged/Login';
+import SearchCity from '../pages/notLogged/SearchCity';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Login from '../pages/signIn/Login';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { StyleSheet } from 'react-native';
 import {
   faCloud,
   faUser,
 } from '@fortawesome/free-solid-svg-icons';
+import Sign from '../pages/notLogged/Sign';
 
 const styles = StyleSheet.create({
   entrar: {
@@ -66,7 +67,7 @@ const AuthRoutes: React.FC = () => (
     })}
   >
     <AuthStack.Screen name="Pesquisar" component={SearchCity} />
-    <AuthStack.Screen name="Entrar" component={Login} />
+    <AuthStack.Screen name="Entrar" component={Sign} />
   </AuthStack.Navigator>
 );
 
