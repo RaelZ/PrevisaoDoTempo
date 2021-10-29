@@ -159,7 +159,6 @@ export default function SearchCity() {
     }
     console.log(weather);
     if (weather) {
-      setClimate(weather.condition_slug);
       console.log(weather.condition_slug);
       setCityWeather([
         <Box
