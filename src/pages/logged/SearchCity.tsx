@@ -14,12 +14,23 @@ import {
   faThermometerHalf,
   faTint,
   faStar,
+  faCloudRain,
+  faPooStorm,
+  faSnowflake,
+  faIcicles,
+  faSmog,
+  faSun,
+  faMoon,
+  faCloud,
+  faCloudSun,
+  faCloudMoon,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { StyleSheet } from 'react-native';
+import { ActivityIndicator, StyleSheet } from 'react-native';
 import { useFormik } from 'formik';
-import { CityInfo, FavCity } from '../../models';
+import { CityInfo } from '../../models';
 import { weatherView } from '../../api/weatherView';
+import { authApi } from '../../api/authApi';
 
 const styles = StyleSheet.create({
   entrar: {
@@ -90,6 +101,7 @@ export default function SearchCity() {
     currently: null as any,
     date: null as any,
     description: null as any,
+    condition_slug: null as any,
     wind_speedy: null as any,
     humidity: null as any,
     temp: null as any,
@@ -100,6 +112,7 @@ export default function SearchCity() {
   const [cityWeather, setCityWeather] = useState<Element | null>(null);
   const [city, setCity] = useState(false);
   const [fav, setFav] = useState(false);
+  const [search, setSearch] = useState(false);
   const handleStar = () => {
     setFav(!fav);
   };
@@ -118,6 +131,7 @@ export default function SearchCity() {
           currently: null as any,
           date: null as any,
           description: null as any,
+          condition_slug: null as any,
           wind_speedy: null as any,
           humidity: null as any,
           temp: null as any,
@@ -136,20 +150,17 @@ export default function SearchCity() {
   });
 
   useEffect(() => {
+    setSearch(false);
     async function addFav(city) {
       const response = [];
-      console.log(city);
       response.push(await weatherView.getFavCity(city));
-      console.log(response);
-      await weatherView.addFavCities(city, response[0].woeid);
+      const { woeid } = response[0];
+      await authApi.addFavCities(city, woeid);
     }
-    async function removeFav() {
-      const response: FavCity = await weatherView.getFavCity(
-        formik.values.city
-      );
-      await weatherView.removeFavCities(response.woeid);
-    }
+    console.log(weather);
     if (weather) {
+      setClimate(weather.condition_slug);
+      console.log(weather.condition_slug);
       setCityWeather([
         <Box
           overflow="hidden"
@@ -165,7 +176,42 @@ export default function SearchCity() {
           <Flex direction="row" w="10%" h="1%"></Flex>
           <Flex direction="row" w="100%">
             <Box justifyContent="center" w="20%">
-              <FontAwesomeIcon style={styles.city} icon={faCity} />
+              {weather.condition_slug === 'rain' ? (
+                <FontAwesomeIcon style={styles.city} icon={faCloudRain} />
+              ) : null}
+              {weather.condition_slug === 'storm' ? (
+                <FontAwesomeIcon style={styles.city} icon={faPooStorm} />
+              ) : null}
+              {weather.condition_slug === 'snow' ? (
+                <FontAwesomeIcon style={styles.city} icon={faSnowflake} />
+              ) : null}
+              {weather.condition_slug === 'hail' ? (
+                <FontAwesomeIcon style={styles.city} icon={faIcicles} />
+              ) : null}
+              {weather.condition_slug === 'fog' ? (
+                <FontAwesomeIcon style={styles.city} icon={faSmog} />
+              ) : null}
+              {weather.condition_slug === 'clear_day' ? (
+                <FontAwesomeIcon style={styles.city} icon={faSun} />
+              ) : null}
+              {weather.condition_slug === 'clear_night' ? (
+                <FontAwesomeIcon style={styles.city} icon={faMoon} />
+              ) : null}
+              {weather.condition_slug === 'cloud' ? (
+                <FontAwesomeIcon style={styles.city} icon={faCloud} />
+              ) : null}
+              {weather.condition_slug === 'cloudly_day' ? (
+                <FontAwesomeIcon style={styles.city} icon={faCloudSun} />
+              ) : null}
+              {weather.condition_slug === 'cloudly_night' ? (
+                <FontAwesomeIcon style={styles.city} icon={faCloudMoon} />
+              ) : null}
+              {weather.condition_slug === 'none_day' ? (
+                <FontAwesomeIcon style={styles.city} icon={faCity} />
+              ) : null}
+              {weather.condition_slug === 'none_night' ? (
+                <FontAwesomeIcon style={styles.city} icon={faCity} />
+              ) : null}
             </Box>
             <Box justifyContent="center" w="50%">
               <Text>{`${weather.city}`}</Text>
@@ -210,7 +256,6 @@ export default function SearchCity() {
               bg="transparent"
               onPress={() => {
                 handleStar();
-                removeFav();
               }}
               leftIcon={
                 <FontAwesomeIcon style={styles.starYes} icon={faStar} />
@@ -238,9 +283,21 @@ export default function SearchCity() {
             />
           </Box>
           <Button.Group mx={{ base: 'auto', md: 0 }}>
-            <Button onPress={formik.handleSubmit} style={styles.entrar}>
-              PROCURAR
-            </Button>
+            {search ? (
+              <Button style={styles.entrar} disabled>
+                <ActivityIndicator color="#fff" />
+              </Button>
+            ) : (
+              <Button
+                onPress={() => {
+                  setSearch(true);
+                  formik.handleSubmit();
+                }}
+                style={styles.entrar}
+              >
+                PROCURAR
+              </Button>
+            )}
           </Button.Group>
           {city ? cityWeather : null}
         </Stack>

@@ -1,6 +1,16 @@
 import {
   faCity,
+  faCloud,
+  faCloudMoon,
+  faCloudRain,
+  faCloudSun,
+  faIcicles,
+  faMoon,
+  faPooStorm,
   faRedo,
+  faSmog,
+  faSnowflake,
+  faSun,
   faThermometerHalf,
   faTimes,
   faTint,
@@ -135,7 +145,54 @@ const Account: React.FC = () => {
             >
               <Flex direction="row" w="100%">
                 <Box justifyContent="center" w="20%">
-                  <FontAwesomeIcon style={styles.city} icon={faCity} />
+                  {listWeather[0].favoriteCityInfo[i].condition_slug ===
+                  'rain' ? (
+                    <FontAwesomeIcon style={styles.city} icon={faCloudRain} />
+                  ) : null}
+                  {listWeather[0].favoriteCityInfo[i].condition_slug ===
+                  'storm' ? (
+                    <FontAwesomeIcon style={styles.city} icon={faPooStorm} />
+                  ) : null}
+                  {listWeather[0].favoriteCityInfo[i].condition_slug ===
+                  'snow' ? (
+                    <FontAwesomeIcon style={styles.city} icon={faSnowflake} />
+                  ) : null}
+                  {listWeather[0].favoriteCityInfo[i].condition_slug ===
+                  'hail' ? (
+                    <FontAwesomeIcon style={styles.city} icon={faIcicles} />
+                  ) : null}
+                  {listWeather[0].favoriteCityInfo[i].condition_slug ===
+                  'fog' ? (
+                    <FontAwesomeIcon style={styles.city} icon={faSmog} />
+                  ) : null}
+                  {listWeather[0].favoriteCityInfo[i].condition_slug ===
+                  'clear_day' ? (
+                    <FontAwesomeIcon style={styles.city} icon={faSun} />
+                  ) : null}
+                  {listWeather[0].favoriteCityInfo[i].condition_slug ===
+                  'clear_night' ? (
+                    <FontAwesomeIcon style={styles.city} icon={faMoon} />
+                  ) : null}
+                  {listWeather[0].favoriteCityInfo[i].condition_slug ===
+                  'cloud' ? (
+                    <FontAwesomeIcon style={styles.city} icon={faCloud} />
+                  ) : null}
+                  {listWeather[0].favoriteCityInfo[i].condition_slug ===
+                  'cloudly_day' ? (
+                    <FontAwesomeIcon style={styles.city} icon={faCloudSun} />
+                  ) : null}
+                  {listWeather[0].favoriteCityInfo[i].condition_slug ===
+                  'cloudly_night' ? (
+                    <FontAwesomeIcon style={styles.city} icon={faCloudMoon} />
+                  ) : null}
+                  {listWeather[0].favoriteCityInfo[i].condition_slug ===
+                  'none_day' ? (
+                    <FontAwesomeIcon style={styles.city} icon={faCity} />
+                  ) : null}
+                  {listWeather[0].favoriteCityInfo[i].condition_slug ===
+                  'none_night' ? (
+                    <FontAwesomeIcon style={styles.city} icon={faCity} />
+                  ) : null}
                 </Box>
                 <Box justifyContent="center" w="55%">
                   <Text>{`${listWeather[0].favoriteCityInfo[i].city}`}</Text>

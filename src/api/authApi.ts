@@ -13,10 +13,11 @@ let token = null as any;
 class AuthApi {
   doAuth(email: string, password: string) {
     return axios
-      .post<User>(`http://10.0.2.2:3000/auth/signin`, {
+      .post<User>(`https://aps-weather-app.herokuapp.com/auth/signin`, {
         email: email,
         password: password,
         rememberMe: true,
+        headers: { Application: 'AppMobile' },
       })
       .then((res) => {
         userId = res.data.id;
@@ -26,7 +27,7 @@ class AuthApi {
   }
   signUp(user: string, email: string, password: string) {
     return axios
-      .post<UserSignUp>(`http://10.0.2.2:3000/auth/signup`, {
+      .post<UserSignUp>(`https://aps-weather-app.herokuapp.com/auth/signup`, {
         name: user,
         email: email,
         password: password,
@@ -36,9 +37,12 @@ class AuthApi {
   getCities() {
     console.log('A');
     return axios
-      .get<PromiseFavoriteCities>(`http://10.0.2.2:3000/user/${userId}`, {
-        headers: { Authorization: token },
-      })
+      .get<PromiseFavoriteCities>(
+        `https://aps-weather-app.herokuapp.com/user/${userId}`,
+        {
+          headers: { Authorization: token, Application: 'AppMobile' },
+        }
+      )
       .then((res) => {
         console.log(res.data);
         return res.data;
@@ -46,9 +50,12 @@ class AuthApi {
   }
   getWeatherFavorityCities() {
     return axios
-      .get<CityInfo[]>(`http://10.0.2.2:3000/user/favorite-city/weather`, {
-        headers: { Authorization: token },
-      })
+      .get<CityInfo[]>(
+        `https://aps-weather-app.herokuapp.com/user/favorite-city/weather`,
+        {
+          headers: { Authorization: token, Application: 'AppMobile' },
+        }
+      )
       .then((res) => {
         const data = { favoriteCityInfo: res.data };
         console.log('data: ', data);
@@ -56,12 +63,30 @@ class AuthApi {
       })
       .catch((err) => console.log(err));
   }
-  removeFavCities(id: number): Promise<FavCity> {
-    console.log(id);
+  addFavCities(city: string, id: number): Promise<FavCity> {
+    console.log('city: ', city, 'woeid: ', id);
     return axios
-      .delete<FavCity>(`http://10.0.2.2:3000/users/favorite-city/${id}`, {
-        headers: { Authorization: token },
-      })
+      .patch<FavCity>(
+        `https://aps-weather-app.herokuapp.com/users/favorite-city`,
+        {
+          cityName: city,
+          cityId: id,
+        },
+        { headers: { Authorization: token, Application: 'AppMobile' } }
+      )
+      .then((res) => {
+        console.log(res.data);
+        return res.data;
+      });
+  }
+  removeFavCities(id: number): Promise<FavCity> {
+    return axios
+      .delete<FavCity>(
+        `https://aps-weather-app.herokuapp.com/users/favorite-city/${id}`,
+        {
+          headers: { Authorization: token, Application: 'AppMobile' },
+        }
+      )
       .then((res) => {
         console.log(res.data);
         return res.data;

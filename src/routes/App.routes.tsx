@@ -6,7 +6,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { StyleSheet } from 'react-native';
 import {
   faCloud,
-  faHome,
   faUser,
 } from '@fortawesome/free-solid-svg-icons';
 
@@ -56,9 +55,7 @@ const AppRoutes: React.FC = () => (
   <AppStack.Navigator
   screenOptions={({ route }) => ({
     tabBarIcon: () => {
-      if (route.name === 'Home') {
-        return <FontAwesomeIcon style={styles.focused} icon={faHome} />
-      } else if (route.name === 'Pesquisar') {
+      if (route.name === 'Pesquisar') {
         return <FontAwesomeIcon style={styles.focused} icon={faCloud} />;
       } else if (route.name === 'Conta') {
         return <FontAwesomeIcon style={styles.focused} icon={faUser} />;
@@ -68,7 +65,6 @@ const AppRoutes: React.FC = () => (
     tabBarInactiveTintColor: '#ccc',
   })}
   >
-    <AppStack.Screen name="Home" component={SearchCity} />
     <AppStack.Screen name="Pesquisar" component={SearchCity} />
     <AppStack.Screen name="Conta" component={Account} />
   </AppStack.Navigator>

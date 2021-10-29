@@ -4,6 +4,7 @@ export default interface CityInfo {
   currently: string;
   date: string;
   description: string;
+  condition_slug: string;
   wind_speedy: string;
   time: string;
   temp: number;
