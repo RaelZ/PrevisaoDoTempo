@@ -1,16 +1,31 @@
 import {
-  Center,
+  faCity,
+  faRedo,
+  faThermometerHalf,
+  faTimes,
+  faTint,
+} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import {
   Heading,
   NativeBaseProvider,
   VStack,
   Button,
   ScrollView,
   Box,
+  Flex,
 } from 'native-base';
 import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, Text, ActivityIndicator } from 'react-native';
+import { authApi } from '../../api/authApi';
+import { weatherView } from '../../api/weatherView';
 import { useAuth } from '../../contexts/Auth';
-import { User, FavoriteCities } from '../../models';
+import {
+  User,
+  FavoriteCities,
+  FavoriteCitiesInfo,
+  FavCity,
+} from '../../models';
 
 const styles = StyleSheet.create({
   containerMain: {
@@ -30,7 +45,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     paddingTop: 50,
-    marginBottom: 0
+    marginBottom: 0,
   },
   textStyle: {
     color: '#fff',
@@ -39,11 +54,27 @@ const styles = StyleSheet.create({
   logoutButton: {
     borderRadius: 50,
   },
+  temp: {
+    padding: 14,
+    color: '#FF4D00',
+    margin: 5,
+  },
+  water: {
+    padding: 14,
+    color: '#00A1E0',
+    margin: 5,
+  },
+  city: {
+    padding: 24,
+    color: '#00A1E0',
+    marginRight: 10,
+  },
 });
 const list: FavoriteCities[] = [];
 
 const Account: React.FC = () => {
-  const { signOut, user, favoriteCities } = useAuth();
+  const { signOut, user, favoriteCities, favoriteCitiesInfo, favoriteCity } =
+    useAuth();
   const [loggedUser, setLoggedUser] = useState<User>({
     id: null as any,
     name: null as any,
@@ -59,32 +90,95 @@ const Account: React.FC = () => {
     signOut();
     list.splice(0, list.length);
   }
+  async function realod() {
+    list.splice(0, list.length);
+    await favoriteCity();
+  }
+  async function removeFav(city) {
+    await authApi.removeFavCities(city);
+    realod();
+  }
 
   useEffect(() => {
-    if (list.length >= 0) {
-      list.splice(0, list.length);
-    }
+    list.splice(0, list.length);
     getCities();
     setLoggedUser(user);
-  }, [loggedUser, favoriteCities]);
+  }, [loggedUser, favoriteCities, favoriteCitiesInfo]);
 
   const getCities = async () => {
+    const listWeather = [favoriteCitiesInfo];
+    console.log('listWeather: ', listWeather[0].favoriteCityInfo);
     list.push(favoriteCities);
-    console.log(list);
     setCitiesList(
-      list[0].map((cities) => (
-          <Center
-            w="80"
-            h="20"
-            bg="#EDEFFF"
-            rounded="md"
-            shadow={5}
-            key={cities.id}
-          >
-            <Text>Cidade: {cities.name}</Text>
-          </Center>
-        ))
+      <>
+        {list[0].length !== 0 ? (
+          <Text style={{ fontSize: 18, color: '#444' }}>
+            Essas são as suas cidades favoritas!
+          </Text>
+        ) : (
+          <Text style={{ fontSize: 18, color: '#444' }}>
+            Você não possuí cidades favoritas!
+          </Text>
+        )}
+        {list[0].map((cities, i) => {
+          return (
+            <Box
+              overflow="hidden"
+              mb={2}
+              mt={2}
+              p={4}
+              w="80"
+              bg="#EDEFFF"
+              shadow={2}
+              rounded="lg"
+              key={cities.id}
+            >
+              <Flex direction="row" w="100%">
+                <Box justifyContent="center" w="20%">
+                  <FontAwesomeIcon style={styles.city} icon={faCity} />
+                </Box>
+                <Box justifyContent="center" w="55%">
+                  <Text>{`${listWeather[0].favoriteCityInfo[i].city}`}</Text>
+                  <Text>{`${listWeather[0].favoriteCityInfo[i].currently}`}</Text>
+                  <Text>{`${listWeather[0].favoriteCityInfo[i].description}`}</Text>
+                </Box>
+                <Box justifyContent="center">
+                  <FontAwesomeIcon
+                    style={styles.temp}
+                    icon={faThermometerHalf}
+                  />
+                  <FontAwesomeIcon style={styles.water} icon={faTint} />
+                </Box>
+                <Box justifyContent="center" w="25%">
+                  <Text>{`${listWeather[0].favoriteCityInfo[i].temp}ºC`}</Text>
+                  <Text />
+                  <Text>{`${listWeather[0].favoriteCityInfo[i].humidity}m³`}</Text>
+                </Box>
+              </Flex>
+              <Button
+                style={{
+                  position: 'absolute',
+                  right: 0,
+                  top: 0,
+                  backgroundColor: '#FFEFAA00',
+                }}
+                bg="transparent"
+                onPress={() => {
+                  removeFav(cities.cityId);
+                }}
+                leftIcon={<FontAwesomeIcon icon={faTimes} />}
+              />
+            </Box>
+          );
+        })}
+      </>
     );
+  };
+  const capitalize = (str) => {
+    if (typeof str !== 'string') {
+      return '';
+    }
+    return str.charAt(0).toUpperCase() + str.substr(1);
   };
 
   return (
@@ -93,21 +187,31 @@ const Account: React.FC = () => {
         <ScrollView style={styles.bodyView}>
           <NativeBaseProvider>
             <VStack space={4} alignItems="center">
-              <Heading textAlign="center" mb="10">
-                Olá, {loggedUser.name}
-              </Heading>
-              <Text style={{ fontSize: 18, color: '#444' }}>
-                Essas são as suas cidades favoritas!
-              </Text>
-              {citiesList}
-              <Button
-                shadow={3}
-                style={styles.logoutButton}
-                onPress={handleSignOut}
-                mt="5"
+              <Heading
+                style={{ fontSize: 28, color: '#1a1a1a' }}
+                textAlign="center"
+                mb="3"
               >
-                SAIR
-              </Button>
+                Olá, {capitalize(loggedUser.name)}
+              </Heading>
+              {citiesList}
+              <Button.Group mx={{ base: 'auto', md: 0 }}>
+                <Button
+                  style={styles.logoutButton}
+                  onPress={handleSignOut}
+                  mt="5"
+                >
+                  SAIR
+                </Button>
+                <Button
+                  onPress={() => realod()}
+                  mt="5"
+                  style={styles.logoutButton}
+                  leftIcon={
+                    <FontAwesomeIcon style={{ color: '#fff' }} icon={faRedo} />
+                  }
+                />
+              </Button.Group>
             </VStack>
           </NativeBaseProvider>
           <Box h="20" />

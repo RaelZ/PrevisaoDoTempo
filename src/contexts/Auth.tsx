@@ -1,8 +1,7 @@
 import axios from 'axios';
 import React, { createContext, useState, useEffect, useContext } from 'react';
-import { AsyncStorage } from 'react-native';
 import { authApi } from '../api/authApi';
-import { FavoriteCities, AuthContextData } from '../models';
+import { FavoriteCities, AuthContextData, CityInfo } from '../models';
 
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 
@@ -20,35 +19,53 @@ export const AuthProvider: React.FC = ({ children }) => {
     name: null as any,
     cityId: null as any,
   });
+  const [favoriteCitiesInfo, setfavoriteCitiesInfo] = useState<CityInfo>({
+    city: null as any,
+    condition_code: null as any,
+    currently: null as any,
+    date: null as any,
+    description: null as any,
+    wind_speedy: null as any,
+    humidity: null as any,
+    temp: null as any,
+    latitude: null as any,
+    longitude: null as any,
+    time: null as any,
+  });
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(setNull);
 
   useEffect(() => {
     async function loadStorageData() {
-      AsyncStorage.clear();
       setLoading(false);
     }
     loadStorageData();
   }, [haveUser]);
 
+  async function signUp(user: string, email: string, password: string) {
+    const response = await authApi.signUp(user, email, password);
+    console.log(response);
+  }
+
+  async function favoriteCity() {
+    const { favoriteCities } = await authApi.getCities();
+    const favoriteCitiesInfo = await authApi.getWeatherFavorityCities();
+    setFavoriteCities(favoriteCities);
+    setfavoriteCitiesInfo(favoriteCitiesInfo);
+  }
+
   async function signIn(email: string, password: string) {
     const response = await authApi.doAuth(email, password);
-    const { favoriteCities } = await authApi.getCities();
+    favoriteCity();
 
     setHaveUser(true);
     setUser(response);
-    setFavoriteCities(favoriteCities);
-    console.log('cities: ', favoriteCities);
 
     axios.defaults.headers.common['Authorization'] = `Bearer ${response.token}`;
-    await AsyncStorage.setItem('@RNAuth:token', JSON.stringify(response.token));
-    await AsyncStorage.setItem('@RNAuth:cities', JSON.stringify(favoriteCities));
-    await AsyncStorage.setItem('@RNAuth:user', JSON.stringify(response));
 
     setLoading(false);
   }
   function signOut() {
-    AsyncStorage.clear().then(() => setUser(setNull));
     setHaveUser(false);
     setUser(setNull);
     setFavoriteCities({
@@ -65,9 +82,12 @@ export const AuthProvider: React.FC = ({ children }) => {
         haveUser,
         user,
         favoriteCities,
+        favoriteCitiesInfo,
+        favoriteCity,
         loading,
         signIn,
         signOut,
+        signUp,
       }}
     >
       {children}

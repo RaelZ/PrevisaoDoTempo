@@ -1,4 +1,5 @@
 import FavoriteCities from "./FavoriteCities";
+import FavoriteCitiesInfo from "./promises/FavoriteCitiesInfo";
 import User from "./User";
 
 export default interface AuthContextData {
@@ -7,6 +8,9 @@ export default interface AuthContextData {
   loading: boolean;
   user: User;
   favoriteCities: FavoriteCities;
+  favoriteCitiesInfo: FavoriteCitiesInfo;
   signIn(email: string, password: string): Promise<void>;
+  signUp(user: string, email: string, password: string): Promise<void>;
   signOut(): void;
+  favoriteCity(): void;
 }
